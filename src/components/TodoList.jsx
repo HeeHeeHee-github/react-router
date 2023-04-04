@@ -12,7 +12,16 @@ export default function TodoList() {
       <h1>할 일 목록</h1>
       <div>
         <input type="text" ref={inputRef} />
-        <button onClick={() => dispatch(create(''))}>추가</button>
+        <button
+          onClick={() => {
+            dispatch(
+              create({ id: todoList.length, text: inputRef.current.value }),
+            )
+            inputRef.current.value = ''
+          }}
+        >
+          추가
+        </button>
       </div>
       <ul>
         {/* todoList 배열 안에 있는 id 값을 key 값으로 */}
