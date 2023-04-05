@@ -6,9 +6,9 @@ const MyButton = styled.a`
   cursor: pointer;
   vertical-align: middle;
   text-decoration: none;
-  line-height: 1em;
-  font-size: 1.3em;
-  padding: 1em 1.8em;
+  line-height: 1.6em;
+  font-size: 1.2em;
+  padding: 1.25em 2em;
   background-color: ${(props) => props.mainColor};
   border: 2px solid ${(props) => props.subColor};
   border-radius: 0.75em;
@@ -16,21 +16,20 @@ const MyButton = styled.a`
   transition: transform 0.15s ease-out;
   transform-style: preserve-3d;
   margin-top: 1em;
-  color: rgb(82, 82, 82);
-
   &::before {
     content: '';
     position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
-    bottom: 0;
+    right: 0;
     left: 0;
     right: 0;
-    background-color: ${(props) => props.subColor};
+    background: ${(props) => props.subColor};
     border-radius: inherit;
     box-shadow: 0 0 0 2px ${(props) => props.subColor};
     transform: translate3d(0, 0.75em, -1em);
+    transition: transform 0.15s ease-out;
   }
   &:hover {
     background: ${(props) => props.hoverColor};
