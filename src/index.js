@@ -5,20 +5,20 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider, useSelector } from 'react-redux'
-import { createStore } from 'redux'
-import combineReducer from './store'
+import rootReducer from './store'
+import { configureStore } from '@reduxjs/toolkit'
 
 const reduxDevTool =
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 
-const rootReducer = createStore(combineReducer, reduxDevTool)
-console.log(rootReducer.getState()) // 모든 state 값을 가져오는 함수
+const store = configureStore({ reducer: rootReducer }, reduxDevTool)
+console.log(store.getState()) // 모든 state 값을 가져오는 함수
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Provider store={rootReducer}>
+      <Provider store={store}>
         <App />
       </Provider>
     </BrowserRouter>

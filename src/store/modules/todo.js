@@ -16,7 +16,13 @@ const initState = {
       done: false,
     },
   ],
+  buyList: ['닌텐도', '자동차'],
+  toDoListCount: 3,
 }
+
+// id 값 생성을 위해!
+let counts = initState.todoList.length
+initState['nextID'] = counts
 
 // 다른 store에서도 CREATE, DONE이 있을 수도 있으니
 // 구분하기 위해서 앞에 todo를 붙힘
@@ -43,15 +49,43 @@ export default function todo(state = initState, action) {
   switch (action.type) {
     case CREATE:
       return {
-        ...state,
-        todoList: state.todoList.concat({
-          id: action.payload.id,
-          text: action.payload.text,
-          done: false,
-        }),
+        ...state, // 얘는 꼭 필요함. 만약 없다면, 무언가를 추가 했을 때 다른 state? 다 사라짐
+        // todoList: state.todoList.concat({
+        //   id: action.payload.id,
+        //   text: action.payload.text,
+        //   done: false,
+        // }),
+        todoList: [
+          ...state.todoList,
+          {
+            id: action.payload.id,
+            text: action.payload.text,
+            done: false,
+          },
+        ],
+        //
+        nextID: action.payload.id + 1,
       }
     case DONE:
-      return console.log('DONE 호출')
+      return {
+        ...state,
+        // todoList 얘만 건들겠다는 의미로 얘만 써줌
+        todoList: state.todoList.map((el) => {
+          // 배열 안에 있는 id 값과 외부 컴포넌트에서 가져온 id 값과 비교
+          if (el.id === action.id) {
+            return {
+              // id, text, done이 있는 객체
+              // 전개구문 사용
+              // 그럼 id랑 text는 그대로 리턴!
+              // done만 true로 바뀜
+              ...el,
+              done: true,
+            }
+          } else {
+            return el
+          }
+        }),
+      }
     default:
       return state
   }

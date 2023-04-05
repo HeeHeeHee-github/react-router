@@ -1,11 +1,11 @@
-const weight = 100
+const weightState = 100
 const now = new Date()
 const month = now.getMonth() + 1
 const day = now.getDate()
 
 // action 이라는 인자를 더 받음 + 추가
 // action - 객체로 전달
-export default function weightReducer(state = weight, action) {
+export default function weight(state = weightState, action) {
   if (action.type === '증가') {
     state += day
     return state

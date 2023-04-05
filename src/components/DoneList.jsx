@@ -2,17 +2,16 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 
 export default function DoneList() {
-  const todoList = useSelector((state) => state.todo.todoList)
+  const doneList = useSelector((state) => state.todo.todoList).filter(
+    (el) => el.done === true,
+  )
 
   return (
     <section>
       <h1>완료된 목록</h1>
       <ul>
-        {todoList.map((el) => (
-          <li key={el.id}>
-            {el.text}
-            <button>완료</button>
-          </li>
+        {doneList.map((el) => (
+          <li key={el.id}>{el.text}</li>
         ))}
       </ul>
     </section>
