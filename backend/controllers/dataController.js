@@ -1,3 +1,5 @@
+const mongoClient = require('./mongoConnect')
+
 // 초기 상태 설정
 const initState = {
   mbtiResult: '',
@@ -130,72 +132,86 @@ const initState = {
   },
 }
 
-const initStateEmpty = {
-  mbtiResult: '',
-  page: 0,
-  survey: [], // 빈 배열 받아옴
-  explanation: {}, // 빈 객체 받아옴
-}
+// Redux 데이터를 최초 DB에 넣어주는 컨트롤러
+const setData = async (req, res) => {
+  try {
+    // 데이터를 삽입하는 구문
 
-// Action Type 설정
-const INIT = 'mbti/INIT'
-const CHECK = 'mbti/CHECK'
-const NEXT = 'mbti/NEXT'
-const RESET = 'mbti/RESET'
+    // 먼저 몽고디비 접속
+    const client = await mongoClient.connect()
 
-// Action 생성 함수 설정
-export function init(data) {
-  return {
-    type: INIT,
-    payload: data,
+    // db중에 mbti한테 접근
+    // 없으면 data 컬렉션을 만들기
+    const data = client.db('mbti').collection('data')
+
+    // 데이터 통으로 넣으면 끝!
+    await data.insertOne(initState)
+    res.status(200).json('데이터 추가 성공')
+  } catch (err) {
+    console.error(err)
+    res.status(500).json('데이터 삽입 실패, 알 수 없는 문제 발생') // 백엔드 개발자 탓이니 500
   }
 }
 
-export function check(result) {
-  return {
-    type: CHECK,
-    payload: { result }, // { result: result } 랑 같은 의미
+// Redux 데이터를 가지고 오는 컨트롤러
+const getData = async (req, res) => {
+  try {
+    // 먼저 몽고디비 접속
+    const client = await mongoClient.connect()
+
+    // db중에 mbti한테 접근
+    // 없으면 data 컬렉션을 만들기
+    const data = client.db('mbti').collection('data')
+
+    // 데이터 통으로 넣으면 끝!
+    const mbtiData = await data.find({}).toArray()
+    res.status(200).json(mbtiData)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json('데이터 삽입 실패, 알 수 없는 문제 발생') // 백엔드 개발자 탓이니 500
   }
 }
 
-export function next() {
-  return {
-    type: NEXT,
+// 방문자 수를 구하는 컨트롤러
+const getCounts = async (req, res) => {
+  try {
+    // 먼저 몽고디비 접속
+    const client = await mongoClient.connect()
+
+    // db중에 mbti한테 접근
+    // 없으면 counts 컬렉션을 만들기
+    const countDB = client.db('mbti').collection('counts')
+
+    // id가 1인 애 찾기
+    const counts = await countDB.findOne({ id: 1 })
+    res.status(200).json(counts)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json('데이터 삽입 실패, 알 수 없는 문제 발생') // 백엔드 개발자 탓이니 500
   }
 }
 
-export function reset() {
-  return {
-    type: RESET,
+// 방문자 수를 +1 만큼 증가 시켜주는 컨트롤러
+const incCounts = async (req, res) => {
+  try {
+    // 먼저 몽고디비 접속
+    const client = await mongoClient.connect()
+
+    // db중에 mbti한테 접근
+    // 없으면 counts 컬렉션을 만들기
+    const countDB = client.db('mbti').collection('counts')
+
+    await countDB.updateOne({ id: 1 }, { $inc: { counts: +1 } })
+    res.status(200).json('방문자 수 업데이트 성공')
+  } catch (err) {
+    console.error(err)
+    res.status(500).json('데이터 삽입 실패, 알 수 없는 문제 발생') // 백엔드 개발자 탓이니 500
   }
 }
 
-export default function mbti(state = initStateEmpty, action) {
-  switch (action.type) {
-    case INIT:
-      return {
-        ...state,
-        survey: action.payload.survey,
-        explanation: action.payload.explanation,
-      }
-    case CHECK:
-      return {
-        ...state,
-        mbtiResult: state.mbtiResult + action.payload.result,
-      }
-    case NEXT:
-      return {
-        ...state,
-        page: state.page + 1, // 원래 있던 값에 +1
-      }
-    case RESET:
-      return {
-        ...state,
-        page: 0, // page를 0으로
-        mbtiResult: '', // 결과를 초기화
-      }
-    default:
-      // 아무런 값이 안 들어왔을 때
-      return state
-  }
+module.exports = {
+  setData,
+  getData,
+  getCounts,
+  incCounts,
 }

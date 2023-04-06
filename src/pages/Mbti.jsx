@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import YellowButton from './YellowButton'
+import YellowButton from '../components/YellowButton'
 import { useDispatch, useSelector } from 'react-redux'
-import { next } from '../store/modules/mbti'
-import Progress from './Progress'
+import { check, next } from '../store/modules/mbti'
+import Progress from '../components/Progress'
 
 const SurveyQuestion = styled.p`
   font-size: 1.5em;
@@ -29,7 +29,10 @@ export default function Mbti() {
             <li key={index}>
               <YellowButton
                 text={el.text}
-                clickEvent={() => dispatch(next())}
+                clickEvent={() => {
+                  dispatch(check(el.result))
+                  dispatch(next())
+                }}
               />
               {index === 0 && <Vs>VS</Vs>}
             </li>
