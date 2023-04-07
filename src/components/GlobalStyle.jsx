@@ -10,6 +10,7 @@ body {
   font-family: 'GmarketSansMedium';
   padding-top: 1em;
   white-space: pre-wrap;
+  text-align: center;
 }
 ul, ol {
 list-style: none; 
