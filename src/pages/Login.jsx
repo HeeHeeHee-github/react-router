@@ -24,7 +24,15 @@ export default function Login() {
       },
     )
 
-    if (resRegister.status !== 200) return alert('')
+    if (resRegister.status !== 200) return alert(resRegister.data)
+
+    alert(resRegister.data)
+    dispatch(
+      login({
+        id: registerIdInput.current.value,
+        password: registerPwInput.current.value,
+      }),
+    )
 
     // fetch 버전 위엔 axios 버전
     // 아래 주소로 보내기
